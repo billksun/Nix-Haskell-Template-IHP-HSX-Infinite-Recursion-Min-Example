@@ -7,6 +7,14 @@
     treefmt-nix.url = "github:numtide/treefmt-nix";
     flake-root.url = "github:srid/flake-root";
     mission-control.url = "github:Platonic-Systems/mission-control";
+    ihp-hsx = {
+      # type = "github";
+      # owner = "digitallyinduced";
+      # repo = "ihp";
+      # dir = "ihp-hsx";
+      url = github:digitallyinduced/ihp?dir=ihp-hsx;
+      flake = false;
+    };
   };
 
   outputs = inputs@{ self, nixpkgs, flake-parts, ... }:
@@ -22,6 +30,10 @@
         # The "main" project. You can have multiple projects, but this template
         # has only one.
         haskellProjects.main = {
+          overrides = self: super: with pkgs.haskell.lib; {
+            ihp-hsx = dontCheck (self.callCabal2nix "ihp-hsx" inputs.ihp-hsx {});
+          };
+          haskellPackages = pkgs.haskell.packages.ghc925;
           packages = {
             haskell-template.root = ./.;
           };
